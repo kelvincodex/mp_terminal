@@ -33,6 +33,7 @@ function assignTerminal(){
     <AssignTerminal v-if="data.showAssignTerminal" @close="handleClose"/>
     <Motion :initial="{opacity: 0, x: -100}" :animate="{opacity: 1, x: 0}" :transition="{duration: 0.5}">  
 
+
     <div class="content-table-section">
         <div style="display: flex; align-items: center; justify-content: space-between;gap:20px;margin:25px 0">
 
@@ -61,6 +62,7 @@ function assignTerminal(){
         <BaseTable></BaseTable>
     </div>
     </Motion>
+
 </template>
 
 <style scoped>
