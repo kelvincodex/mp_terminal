@@ -69,8 +69,8 @@ const getCurrentRouteSubTitle = computed(() => {
                 <p class="text-sm">{{getCurrentRouteSubTitle}}</p>
               </div>
               <div class="content-inner-container-right">
-                <img src="@/assets/icon/main-logo.57311ad2.svg" alt="">
-              
+                <img src="@/assets/icon/main-logo.57311ad2.svg" alt="">              
+
               </div>
             </div>
 
