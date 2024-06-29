@@ -2,6 +2,7 @@
  defineProps({
   text:String,
   amount:String,
+  analytics:Boolean
 
  })
 </script>
@@ -11,6 +12,7 @@
     <p class="base-card-title">{{ text }}</p>
 
     <p class="base-card-amount">{{ amount }}</p>
+    <p v-if="analytics" class="text-green flex items-center gap-3"><img src="../../assets/icon/arrow-up.svg" /> 20% <span>vs last month</span></p>
   </div>
 
 </template>

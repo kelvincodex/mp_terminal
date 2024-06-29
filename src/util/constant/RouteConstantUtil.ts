@@ -10,7 +10,11 @@ export const RouteConstantUtil = {
     },
     dashboard:{
         homePage: "Dashboard",
-        terminalPage:"Terminals",
+        teminalPage:"Terminals",
+        transactions:"Transactions",
+        organisations:"Organisations",
+        charges:"Manage Charges",
+        user:"User",
         authRequired:true
     },
 }

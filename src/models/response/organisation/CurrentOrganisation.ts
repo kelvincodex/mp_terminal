@@ -1,0 +1,20 @@
+export type currentOrganisation = {
+    organisationAccountNumber: string,
+    organisationCreatedAt: string,
+    organisationCustomerId: string,
+    organisationEmail: string,
+    organisationId: 0,
+    organisationIndustryType: string,
+    organisationInviteCode: string,
+    organisationLogo: string,
+    organisationName: string,
+    organisationPhone: string,
+    organisationReferralCode: string,
+    organisationRegistrationDate: string,
+    organisationRegistrationNumber: string,
+    organisationStage: string,
+    organisationStatus: string,
+    organisationType: string,
+    organisationUpdatedAt: string,
+    organisationWebsite: string
+  }

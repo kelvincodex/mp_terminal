@@ -3,7 +3,7 @@
         
       <div v-if="passwordResetStage === '1'" class="w-3/12 min-w-fit">
         <div class="w-full flex justify-center my-3">
-            <img src="../../../assets/icon/logo.svg" alt="logo" >
+          <img class="logo shadow-lg" src="../../../assets/icon/cropped.png" alt="">
         </div>
         <h1 class="font-[800] text-[37px] font-inter-Medium text-center">Forgot Password</h1>
         <p class="text-[14px] leading-[25px] text-center text-gray-500">Let's help you fix it</p>
@@ -19,13 +19,13 @@
          
           <base-button type="submit" loadingColor="white" :loading="wait.isLoading('DATA_SUBMITTING')">Send Email</base-button>
 
-          <p class="text-[14px] leading-[21px] text-gray_1 text-center cursor-pointer" @click="toLogin">I have an account? <span class="sign-up">Log in</span></p>
+          <p class="text-[14px] leading-[21px] text-gray_1 text-center cursor-pointer py-4" @click="toLogin">I have an account? <span class="sign-up">Log in</span></p>
 
         </form>
       </div>
       <div v-else class="w-3/12 min-w-fit">
           <div class="w-full flex justify-center my-3">
-              <img src="../../../assets/icon/logo.svg" alt="logo" >
+            <img class="logo shadow-lg" src="../../../assets/icon/cropped.png" alt="">
           </div>
           <h1 class="font-[800] text-[37px] font-inter-Medium text-center">Forgot Password</h1>
           <p class="text-[14px] leading-[25px] text-center text-gray-500">OTP was sent to <code><span class="text-primary">{{ AuthRequest.InitiatePasswordResetRequest.userEmail }}</span></code></p>
@@ -44,7 +44,7 @@
            
             <base-button type="submit" loadingColor="white" :loading="wait.isLoading('DATA_SUBMITTING')">Change Password</base-button>
   
-            <p class="text-[14px] leading-[21px] text-gray_1 text-center cursor-pointer" @click="toLogin">I have an account? <span class="sign-up">Log in</span></p>
+            <p class="text-[14px] leading-[21px] text-gray_1 text-center cursor-pointer py-4" @click="toLogin">I have an account? <span class="sign-up">Log in</span></p>
   
           </form>
         </div>
@@ -57,8 +57,8 @@
   import BaseCheckbox from "@/components/checkbox/BaseCheckbox.vue";
   import BaseButton from "@/components/button/BaseButton.vue";
   import {router} from "@/router/index";
-  import AuthRequest from "@/models/request/AuthRequest.js"
-  import StoreUtiils from "@/util/storeUtils.js"
+  import AuthRequest from "@/models/request/AuthRequest"
+  import StoreUtiils from "@/util/storeUtils.ts"
   import { useToast, useWait } from 'maz-ui'
   import { computed } from "vue";
   
@@ -67,7 +67,7 @@
   
   
   function toLogin() {
-    router.push({path:'/login'});
+    router.push({path:'/'});
   }
   
   async function initiateForgotPassword(){
@@ -93,6 +93,13 @@
   </script>
   
   <style scoped >
+  .logo{
+  @apply bg-primary;
+  width: 150px;
+  height: 57px;
+  padding: 10px;
+  border-bottom-right-radius: 2rem;
+}
     .outlineBtn{
         background-color: transparent;
     }

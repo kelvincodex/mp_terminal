@@ -1,40 +1,41 @@
 <template>
     <div class="form-container mx-auto">
+
       <div class="">
         <h1 class="font-[800] text-[37px] font-inter-Medium">Sign Up</h1>
         <p class="text-[16px] leading-[25px]" >Manage your business with ease!</p>
         <div>
             <!--progress tracker -->
-            <div class="relative flex items-center justify-start mt-5">
+            <!-- <div class="relative flex items-center justify-start mt-5">
                 <div @click="steps='1'" class="w-14 h-14 border-4 border-white  rounded-full ellipse"></div>
                 <div class="w-full max-w-xs border-t-2 border-gray-500"></div>
                 <div class="w-14 h-14 border-4 border-white  rounded-full ellipse"></div>
-            </div>
+            </div> -->
 
             <div>
                 <!--steps-->
-                <div class="flex justify-between">
+     
+    
+                <!-- <div class="flex justify-between">
                     <div>
-                        <!--step1-->
                         <p class="pb-2"> Step 1</p>
                         <p>Bussiness Details</p>
                         <p>Complete</p>
                     </div>
                     <div>
-                        <!--step1-->
                         <p>Step 2</p>
                         <p>Login Info</p>
                         <p>Pending</p>
                     </div>
-                </div>
+                </div> -->
             </div>
-          </div>
+        </div>
         <form class="" @submit.prevent="initiateEnrolment">
           <div v-if="steps === '1'">  
             <base-input v-model="AuthRequest.InitiateEnrollmentRequest.organisationName" placeholder="Enter your business name"  label="Business Name"/>
             <base-input v-model="AuthRequest.InitiateEnrollmentRequest.organisationAddress" placeholder="Address" label="Address"/>
 
-            <div class="flex gap-10">
+            <div class="flex gap-10 py-4">
                 <base-input v-model="AuthRequest.InitiateEnrollmentRequest.userFirstName" placeholder="Enter your first name"  label="First Name"/>
                 <base-input v-model="AuthRequest.InitiateEnrollmentRequest.userLastName" placeholder="Enter your last name" label="Last Name"/>
             </div>
@@ -59,11 +60,21 @@
                 <base-input v-model="AuthRequest.InitiateEnrollmentRequest.userPassword"  placeholder="....." label="Password"/>
                 <span>Password must be atlease 8 characters</span>
             </div>
-            <base-input v-model="comfirmPassword"  placeholder="....." label="Comfirm Password"/>
+            <div class="py-4">
+              <base-input v-model="comfirmPassword"  placeholder="....." label="Comfirm Password"/>
+
+
+            </div>
+            <div class="py-3">
+              <base-button type="button" @click="steps='1'">Go Back</base-button>
+
+
+            </div>
+
             <base-button type="submit" loadingColor="white" :loading="wait.isLoading('DATA_SUBMITTING')">Create Account</base-button>
          </div>
   
-          <p class="text-[14px] leading-[21px] text-gray_1 text-center" @click="toLogin">Already have an account? <span class="sign-up">Login</span></p>
+          <p class="text-[14px] leading-[21px] text-gray_1 text-center py-4" @click="toLogin">Already have an account? <span class="sign-up">Login</span></p>
         </form>
       </div>
     </div>
@@ -76,9 +87,10 @@
   import {router} from "@/router/index";
   import MazPhoneNumberInput from 'maz-ui/components/MazPhoneNumberInput'
   import { reactive, ref } from 'vue'
-  import AuthRequest from "@/models/request/AuthRequest.js";
+  import AuthRequest from "@/models/request/AuthRequest.ts";
   import { useToast, useWait } from 'maz-ui'
-import StoreUtils from "@/util/storeUtils.js";
+  import StoreUtils from "@/util/storeUtils.ts";
+  
 
   const toast = useToast()
   const wait = useWait()
@@ -102,7 +114,7 @@ async function initiateEnrolment(){
 }
 
   function toLogin() {
-    router.push({path:'/login'});
+    router.push({path:'/'});
   }
 
  

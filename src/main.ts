@@ -8,6 +8,7 @@ import 'primevue/resources/themes/aura-light-green/theme.css'
 import 'maz-ui/css/main.css'
 import { installToaster, ToasterOptions, installWait} from 'maz-ui'
 import pinia from "@/util/PiniaUtil.ts";
+import ConfirmationService from 'primevue/confirmationservice';
 
 
 // DEFAULT OPTIONS
@@ -20,7 +21,10 @@ const toasterOptions: ToasterOptions = {
 const app = createApp(App)
 app.use(installToaster, toasterOptions)
 app.use(installWait)
-app.use(PrimeVue)
+app.use(ConfirmationService)
+app.use(PrimeVue, {
+  unstyled: false,
+});
 app.use(pinia)
 app.use(router)
 

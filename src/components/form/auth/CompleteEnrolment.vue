@@ -29,8 +29,8 @@
   import BaseCheckbox from "@/components/checkbox/BaseCheckbox.vue";
   import BaseButton from "@/components/button/BaseButton.vue";
   import {router} from "@/router/index";
-  import AuthRequest from "@/models/request/AuthRequest.js"
-  import StoreUtiils from "@/util/storeUtils.js"
+  import AuthRequest from "@/models/request/AuthRequest.ts"
+  import StoreUtiils from "@/util/storeUtils.ts"
   import { useToast, useWait } from 'maz-ui'
   
   const toast = useToast()

@@ -75,7 +75,7 @@ export const useAuthStore = defineStore('auth_store', {
             try{
                 if(responseData.responseCode === '00'){
                     this.userInfo = responseData
-                    await router.push({path: router.currentRoute.value.query.redirectFrom ? router.currentRoute.value.query.redirectFrom : '/dashboard'})
+                    await router.push({path: JSON.stringify(router.currentRoute.value.query.redirectFrom) ? JSON.stringify(router.currentRoute.value.query.redirectFrom) : '/dashboard'})
                     StoreUtils.getter()?.organisation.readCustomerOrganisation(responseData.userId)
                 }else{
                     toast.error(responseData.responseMessage, { position: 'top-right', timeout: 3000 })

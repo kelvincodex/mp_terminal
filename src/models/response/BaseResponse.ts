@@ -1,5 +1,5 @@
-export type BaseResponse<T=any>  = {
+export type BaseResponse<payload=any>  = {
     responseCode: string,
     responseMessage: string
-    data: T
+    data: payload
 }

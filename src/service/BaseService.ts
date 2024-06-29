@@ -34,7 +34,8 @@ appClient.interceptors.request.use(config => {
 appClient.interceptors.response.use(response => {
     if (response != null) {
         if (response.data != null) {
-            if (response.data.responseCode === '26') {
+            if (response.data.responseCode === '22') {
+                console.log(response.data)
                 // StoreUtils.getter().auth.commitSessionStory(true)
                 // sessionStorage.removeItem('token')
                 // localStorage.clear();

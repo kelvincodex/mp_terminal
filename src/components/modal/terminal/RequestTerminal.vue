@@ -1,18 +1,23 @@
 <script lang="ts" setup>
 import BaseLayout from '../BaseLayout.vue';
 import BaseButton from '@/components/button/BaseButton.vue';
-import Dropdown from 'primevue/dropdown';
-import { reactive, defineEmits } from 'vue';
+import {defineEmits, computed, ref } from 'vue';
+import StoreUtils from '@/util/storeUtils';
+import TerminalRequest from '@/models/request/terminal/TerminalRequest';
+import BaseInput from '@/components/input/BaseInput.vue';
+import { useToast, useWait } from 'maz-ui';
+
+const toast = useToast()
+const wait = useWait()
+
+const model:any = ref(TerminalRequest.createTerminal)
 
 const emit = defineEmits<{
   (e: 'close', value: boolean): void;
 }>();
 
-
-const data = reactive({
-    showConfirmAgain:true,
-    isRequestSent:false
-
+const organisations = computed(() => {
+    return StoreUtils.getter()?.organisation.getCurrentOrganisation
 })
 
 
@@ -21,12 +26,14 @@ function close(){
 }
 
 
-function sendRequest(){
-    data.isRequestSent = true
-}
+async function createTerminal(){
+    wait.start('CREATING_TERMINAL')
+    model.value.terminalOrganisationId = organisations.value?.organisationId;
 
-function discardRequest(){
-    data.isRequestSent = false
+    await StoreUtils.getter()?.terminal.createNewTerminal(model.value, toast)
+    wait.stop('CREATING_TERMINAL')
+    close()
+   
 }
 
 
@@ -35,54 +42,32 @@ function discardRequest(){
 <template>
     <BaseLayout>
         <template v-slot:child>
-                <div v-show="!data.isRequestSent" class="modal-child-wrapper">
+                <div class="modal-child-wrapper">
                     <div class="modal-child-header">
-                        <p class="req-term">Request Terminal</p>
+                        <p class="req-term">Add Terminal</p>
                         <img src="../../../assets/icon/Frame.svg"  @click="close"/>
                     </div>
 
                     <div class="modal-child-content">
-                        <div>
-                            <label>Terminal I.D</label>
-                            <Dropdown class="select-drowdown"></Dropdown>
+                        <div class="flex justify-between gap-10">
+                            <base-input type="text" v-model="model.terminalSerialNumber" placeholder="Terminal Serial Number"  label="TerminalSerialNumber" />
+                            <base-input type="text" v-model="model.terminalPin" placeholder="Terminal Pin"  label="TerminalPin" />
                         </div>
-                        <div>
-                            <label>Assign To</label>
-                            <Dropdown class="select-drowdown"></Dropdown>
-                        </div>
-                    
+                       
                     </div>
-
-                
+        
 
                     <!-- <div class="divider"></div> -->
 
 
                     <div class="modal-child-footer">
                       
-                        <BaseButton @click="sendRequest">Send Request</BaseButton>
+                        <BaseButton :loading="wait.isLoading('CREATING_TERMINAL')" @click="createTerminal">Send Request</BaseButton>
 
                     </div>
 
                 </div>
-            
-
-                <div v-show="data.isRequestSent && data.showConfirmAgain" class="modal-confirm-div">
-                    <img src="../../../assets/icon/Featuredicon.svg" />
-                    <div class="modal-confirm-inner-div">
-                        <span class="confirm-request-title">Confirm Request</span>
-                        <span class="confirm-request-subtitle">Confirm that you are making a request of 100 terminals</span>
-
-                        <div class="modal-confirm-inner-div-footer">
-                            <BaseButton bg-color="transparent" bg-border="#D0D5DD" @click="discardRequest">
-                                <p class="bnt-trans-text">Discard</p>
-                            </BaseButton>
-                            <BaseButton>Confirm</BaseButton>
-                        </div>
-                    </div>
-                </div>
-         
-          
+        
         </template>
     </BaseLayout>
 </template>
@@ -199,15 +184,8 @@ color: #222222;
 
 .modal-child-wrapper{
     /* Assign Terminal Form */
-
-    /* Auto layout */
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
     padding: 0px;
     width: 702px;
-    height: 271px;
-
     /* White */
     background: #FFFFFF;
     /* Shadow/sm */
@@ -232,40 +210,18 @@ align-items: center;
 padding: 16px 24px;
 gap: 10px;
 
-width: 702px;
-height: 78px;
-
 background: #FFFFFF;
 border-bottom: 1px solid #E6E6E6;
 border-radius: 16px 16px 0px 0px;
-
-/* Inside auto layout */
-flex: none;
-order: 0;
-flex-grow: 0;
 
 }
 
 .modal-child-content{
     /* Content */
-
-/* Auto layout */
-display: flex;
-align-items: flex-start;
 padding: 24px;
-gap: 24px;
-
-width: 702px;
-height: 120px;
 
 /* White */
 background: #FFFFFF;
-
-/* Inside auto layout */
-flex: none;
-order: 1;
-align-self: stretch;
-flex-grow: 0;
 border-bottom: 1px solid #E6E6E6;
 
 
@@ -278,18 +234,11 @@ border-bottom: 1px solid #E6E6E6;
 /* Auto layout */
 display: flex;
 align-items: center;
-padding:0 24px;
+padding:24px;
 justify-content: end;
 width: 702px;
-height: 73px;
 gap: 12px;
 
-
-/* Inside auto layout */
-flex: none;
-order: 2;
-align-self: stretch;
-flex-grow: 0;
 
 }
 

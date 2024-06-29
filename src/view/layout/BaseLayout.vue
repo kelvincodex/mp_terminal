@@ -1,14 +1,9 @@
 <script setup lang="ts">
-import { computed, onMounted, reactive , defineProps } from 'vue';
+import { computed, onMounted, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import { SidebarTopUtils, SidebarBottomUtils } from '@/util/constant/SidebarUtils.ts';
 
 const authRoutes = ['Login', 'Register', 'InitiateForgotPassword'];
-
-const props = defineProps<{
-    l: string | null,
-  }>()
-
 
 const router = useRouter();
 
@@ -16,7 +11,8 @@ const data = reactive({
   mounting: true
 });
 
-const getCurrentRoute = computed(() => router.currentRoute.value.name);
+const getCurrentRoute:any = computed(() => router.currentRoute.value.name);
+
 const getCurrentRoutePath = computed(() => router.currentRoute.value.fullPath);
 
 const isAuthRoute = computed(() => authRoutes.includes(getCurrentRoute.value));
@@ -33,7 +29,7 @@ onMounted(() => {
   <div class="dashboard-wrapper-layout" v-else v-cloak>
     <div class="sidebar-wrapper" v-if="!isAuthRoute">
       <div class="sidebar-wrapper-header">
-        <img class="logo" src="../../assets/icon/cropped.png" alt="">
+        <img class="logo shadow-lg" src="../../assets/icon/cropped.png" alt="">
       </div>
       <div class="search-wrapper">
         <input class="search-input" type="text" placeholder="Search..." autocomplete="off" />
@@ -71,6 +67,13 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.logo{
+  @apply bg-primary;
+  width: 150px;
+  height: 57px;
+  padding: 10px;
+  border-bottom-right-radius: 2rem;
+}
 [v-cloak] {
     display: none;
   }
@@ -81,6 +84,9 @@ onMounted(() => {
     justify-content: space-between;
     gap: 100px;
     height: calc(100% - 30%);
+    transform: scale(.9);
+    transform-origin:0 0;
+
   }
 
   .hideShow{
@@ -102,7 +108,7 @@ onMounted(() => {
   }
 .dashboard-wrapper-layout{
   width: 100%;
-  background-color: #fff !important;
+  background-color: #fafafa !important;
   display: flex;
   height: 100vh;
 
@@ -112,6 +118,7 @@ onMounted(() => {
   width: calc(100% - 294px);
   min-height: 100%;
   overflow: auto;
+  background-color: #fafafa
 }
 
 .authView{

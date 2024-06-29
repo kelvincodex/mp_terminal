@@ -1,31 +1,71 @@
 <script setup lang="ts">
 import BaseCard from "../../components/cards/BaseCard.vue";
-import BaseTable from "@/components/table/BaseTable.vue";
 import Chart from 'primevue/chart';
-import {Motion} from "motion/vue";
-import { ref, onMounted } from "vue";
-import { useToast, useWait} from 'maz-ui'
+import { Motion } from "motion/vue";
+import { ref, onMounted, reactive, computed } from "vue";
+import { useToast, useWait } from 'maz-ui'
 import StoreUtils from "@/util/storeUtils.ts";
 import MazFullscreenLoader from 'maz-ui/components/MazFullscreenLoader'
 import ContentHeader from "@/components/dashboardHeader/ContentHeader.vue";
+import DataTable from 'primevue/datatable';
+import Column from 'primevue/column';
+import { FilterMatchMode } from 'primevue/api';
 
 const toast = useToast()
 const wait = useWait()
+const metaKey = ref(true);
+
+const metaKey2 = ref(true);
+
+
+
+const chartData = ref();
+
+const chartOptions = ref();
 
 const user = StoreUtils.getter()?.auth.userInfo
+const transactions = StoreUtils.getter()?.transactions.getTransactions
+
+const terminalOrganizations = computed(() => {
+  return StoreUtils.getter()?.terminal?.getTerminalOrganisations
+})
+
+
+const reactiveData = reactive({
+  selectedRow: null
+})
+
 
 onMounted(async () => {
   chartData.value = setChartData();
   chartOptions.value = setChartOptions();
-  if(!user){
+  if (!user) {
     wait.start()
     await StoreUtils?.getter()?.auth?.userDetails(toast)
     wait.stop()
   }
 });
 
-const chartData = ref();
-const chartOptions = ref();
+
+const onRowSelect = (event: any) => {
+  reactiveData.selectedRow = event.data
+  console.log(event)
+}
+
+const filters = ref({
+  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+  transactionTerminalId: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+  // representative: { value: null, matchMode: FilterMatchMode.IN },
+  transactionStatus: { value: null, matchMode: FilterMatchMode.EQUALS },
+});
+
+const filters2 = ref({
+  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+  transactionTerminalId: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+  // representative: { value: null, matchMode: FilterMatchMode.IN },
+  transactionStatus: { value: null, matchMode: FilterMatchMode.EQUALS },
+});
+
 
 const setChartData = () => {
   const documentStyle = getComputedStyle(document.documentElement);
@@ -105,25 +145,38 @@ const setChartOptions = () => {
   };
 }
 
+const transactionsHeaders = [
+  { label: 'transactionRequestAmount', key: 'transactionRequestAmount' },
+  { label: 'transactionStatus', key: 'transactionStatus' },
+  { label: 'transactionTerminalId', key: 'transactionTerminalId' },
+  { label: 'transactionTransactionTime', key: 'transactionTransactionTime' },
+  { label: 'transactionToAccountType', key: 'transactionToAccountType' },
+  { label: 'transactionToAccountIdentification', key: 'transactionToAccountIdentification' }]
+
+const terminalHeaders = [
+  { label: 'terminalId', key: 'terminalId' },
+  { label: 'terminalSerialNumber', key: 'terminalSerialNumber' },
+  { label: 'terminalMerchantNameLocation', key: 'terminalMerchantNameLocation' },
+  { label: 'terminalCreatedAt', key: 'terminalCreatedAt' }]
 
 </script>
 
 <template>
   <MazFullscreenLoader style="position: fixed;z-index: 9999;" v-if="wait.isLoading()">
-      <p>
-        Loading...
-      </p>
-    </MazFullscreenLoader>
+    <p>
+      Loading...
+    </p>
+  </MazFullscreenLoader>
 
 
-  <Motion :initial="{opacity: 0, x: -100}" :animate="{opacity: 1, x: 0}" :transition="{duration: 0.5}">  
-    <ContentHeader  />
+  <Motion :initial="{ opacity: 0, x: -100 }" :animate="{ opacity: 1, x: 0 }" :transition="{ duration: 0.5 }">
+    <ContentHeader />
     <div class="content">
       <div class="content-card-section">
-        <base-card text="Total Transaction" amount="2,420"></base-card>
-        <base-card text="Successfull Transaction" amount="1198"></base-card>
-        <base-card text="Pending Transaction" amount="502"></base-card>
-        <base-card text="Failed Transaction" amount="32"></base-card>
+        <base-card text="Number of Businesses" amount="12" :analytics="true"></base-card>
+        <base-card text="Successfull Transaction" amount="1,198" :analytics="true"></base-card>
+        <base-card text="Pending Transaction" amount="2" :analytics="true"></base-card>
+        <base-card text="Failed Transaction" amount="32" :analytics="true"></base-card>
       </div>
 
       <div class="content-chart-section">
@@ -153,31 +206,90 @@ const setChartOptions = () => {
             </div>
           </div>
         </div>
-        <div class="card">
-          <Chart type="line" :data="chartData" :options="chartOptions" class="h-30rem" />
-        </div>
+        <Chart type="line" :data="chartData" :options="chartOptions" class="h-100rem" />
+
       </div>
 
+      <div class="content-table-section">
+        <div style="display: flex; align-items: center; justify-content: start;gap:20px;margin:25px 0">
+          <p class="text-xl text-black">Recent Terminals</p>
+          <img src="../../assets/icon/alert-circle.svg" />
+        </div>
+
+        <div class="overflow-auto rounded-lg shadow">
+          <DataTable v-model:filters="filters2" :value="terminalOrganizations" :metaKeySelection="metaKey2"
+            selectionMode="single" :rows="3" stripedRows tableStyle="min-width: 50rem"
+            paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
+            currentPageReportTemplate="{first} to {last} of {totalRecords}" dataKey="id" filterDisplay="row"
+            :globalFilterFields="['transactionStatus', 'transactionTerminalId']" @rowSelect="onRowSelect">
+
+            <template #header>
+              <div class="flex justify-end">
+
+              </div>
+            </template>
+
+            <template #empty>
+              <div class="text-center">
+                No Resent Terminal found.
+              </div>
+            </template>
+            <template #loading> Loading customers data. Please wait. </template>
+
+            <Column v-for="col of terminalHeaders" :key="col.key" :field="col.key" :header="col.label"></Column>
+
+          </DataTable>
+        </div>
+        <!-- <BaseTable :headers="terminalHeaders" :bodies="terminalDatas"></BaseTable> -->
+      </div>
 
       <div class="content-table-section">
         <div style="display: flex; align-items: center; justify-content: start;gap:20px;margin:25px 0">
           <p class="text-xl text-black">Recent Transaction</p>
           <img src="../../assets/icon/alert-circle.svg" />
         </div>
-        <BaseTable></BaseTable>
+        <div class="overflow-auto rounded-lg shadow">
+
+          <!-- <BaseTable :headers="headers" :bodies="data"></BaseTable>
+        <div class="overflow-auto rounded-lg shadow"> -->
+
+          <!-- <BaseTable pagination="true" search="true" :bodies="transactions" :headers="transactionsHeaders"></BaseTable> -->
+          <DataTable v-model:filters="filters" :value="transactions" :metaKeySelection="metaKey" selectionMode="single"
+            :rows="3" stripedRows tableStyle="min-width: 50rem"
+            paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
+            currentPageReportTemplate="{first} to {last} of {totalRecords}" dataKey="id" filterDisplay="row"
+            :globalFilterFields="['transactionStatus', 'transactionTerminalId']" @rowSelect="onRowSelect">
+
+            <template #header>
+              <div class="flex justify-end">
+
+              </div>
+            </template>
+
+            <template #empty>
+              <div class="text-center">
+                No Resent Transactions found.
+              </div>
+            </template>
+            <template #loading> Loading customers data. Please wait. </template>
+
+            <Column v-for="col of transactionsHeaders" :key="col.key" :field="col.key" :header="col.label"></Column>
+
+          </DataTable>
+        </div>
+
       </div>
     </div>
-  </Motion> 
-  
+  </Motion>
+
 </template>
 
 <style scoped>
-
-.content{
+.content {
   background-color: white;
 }
 
-.circle-sm{
+.circle-sm {
   /* Ellipse 18 */
   width: 14px;
   height: 14px;
@@ -189,17 +301,17 @@ const setChartOptions = () => {
 
 }
 
-.pending{
+.pending {
   background: #FF8A00;
 
 }
 
-.failed{
+.failed {
   background: #FF0000;
 
 }
 
-.date-picker{
+.date-picker {
   /* BTN */
 
   /* Auto layout */
@@ -220,11 +332,11 @@ const setChartOptions = () => {
   flex: none;
   order: 1;
   flex-grow: 0;
-  cursor:pointer;
+  cursor: pointer;
 
 }
 
-.content-card-section{
+.content-card-section {
   display: flex;
   padding: 2rem;
   gap: 25px;
@@ -236,12 +348,11 @@ const setChartOptions = () => {
   display: none;
 }
 
-.content-table-section{
+.content-table-section {
   padding: 2rem;
 }
 
-.content-chart-section{
-  padding: 2rem;
+.content-chart-section {
+  padding: 1rem;
 }
 </style>
-

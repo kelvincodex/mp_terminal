@@ -1,11 +1,7 @@
-import { apiClient } from "./BaseService.js"
+import { apiClient } from "./BaseService.ts"
 export default {
-    readTerminals(){
-        return apiClient.appClient.post(`/dev/terminal/read`)
+    readTransactions(){
+        return apiClient.appClient.get(`/dev/transaction/read`)
     },
-
-    createTerminal(payload: any){
-        return apiClient.appClient.post('/dev/terminal/create', payload)
-    }
     
 }
